@@ -9,7 +9,8 @@ class Indikator extends Model
 {
     protected $fillable = [
         'nama_indikator',
-        'slug'
+        'slug',
+        'deskripsi'
     ];
 
     public function kategoris()
