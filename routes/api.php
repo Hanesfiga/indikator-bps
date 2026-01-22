@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\DataIndikatorController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AboutController;
+
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index']); // ?tahun=2024
@@ -25,3 +27,7 @@ Route::get('/data-indikator/{indikatorId}', [DataIndikatorController::class, 'by
 
 // Admin
 Route::post('/admin/login', [AdminController::class, 'login']);
+
+// About
+Route::get('/abouts', [AboutController::class, 'index']);
+Route::get('/abouts/{id}', [AboutController::class, 'show']);
