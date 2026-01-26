@@ -31,3 +31,4 @@ Route::post('/admin/login', [AdminController::class, 'login']);
 // About
 Route::get('/abouts', [AboutController::class, 'index']);
 Route::get('/abouts/{id}', [AboutController::class, 'show']);
+Route::put('/abouts/{id}', [AboutController::class, 'update']);

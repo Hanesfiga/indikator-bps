@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Indikator;
+use App\Models\Kategori;
 
 class DashboardController extends Controller
 {
@@ -23,10 +24,15 @@ class DashboardController extends Controller
                 }
             }])
             ->get();
+ $totalKategori = Kategori::count();
+
+           $totalIndikator = Indikator::count();
 
         return response()->json([
             'success' => true,
             'tahun' => $tahun,
+            'total_indikator' => $totalIndikator,
+            'total_kategori' => $totalKategori,
             'data' => $indikator
         ]);
     }

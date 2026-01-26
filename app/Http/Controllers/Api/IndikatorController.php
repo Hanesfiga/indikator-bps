@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Indikator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class IndikatorController extends Controller
 {
     /**
      * LIST INDIKATOR
+     * GET /api/indikators
      */
     public function index()
     {
@@ -21,7 +23,7 @@ class IndikatorController extends Controller
 
     /**
      * DETAIL INDIKATOR BERDASARKAN SLUG + FILTER TAHUN
-     * URL: /api/indikators/{slug}?tahun=2024
+     * GET /api/indikators/{slug}?tahun=2024
      */
     public function show(Request $request, $slug)
     {
@@ -64,18 +66,26 @@ class IndikatorController extends Controller
 
     /**
      * TAMBAH INDIKATOR
+     * POST /api/indikators
      */
     public function store(Request $request)
     {
+        // ✅ VALIDASI (slug tidak diminta dari frontend)
         $request->validate([
-            'nama_indikator' => 'required|string',
-            'slug' => 'required|string|unique:indikators,slug',
+            'nama_indikator' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
         ]);
 
+        // ✅ GENERATE SLUG OTOMATIS & AMAN
+        $slug = Str::slug($request->nama_indikator);
+        $count = Indikator::where('slug', 'like', "{$slug}%")->count();
+        if ($count > 0) {
+            $slug = "{$slug}-{$count}";
+        }
+
         $indikator = Indikator::create([
             'nama_indikator' => $request->nama_indikator,
-            'slug' => $request->slug,
+            'slug' => $slug,
             'deskripsi' => $request->deskripsi,
             'tahun' => 0,
         ]);
