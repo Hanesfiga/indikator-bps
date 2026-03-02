@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Storage;
 
 class IndikatorController extends Controller
 {
+    private $baseUrl = 'http://192.168.3.220:8000';
+
     /**
      * LIST INDIKATOR
-     * GET /api/indikators
      */
     public function index()
     {
@@ -23,7 +24,7 @@ class IndikatorController extends Controller
                 'slug' => $item->slug,
                 'deskripsi' => $item->deskripsi,
                 'background_image' => $item->background_image 
-                    ? asset('storage/' . $item->background_image)
+                    ? $this->baseUrl . '/storage/' . $item->background_image
                     : null,
             ];
         });
@@ -35,8 +36,7 @@ class IndikatorController extends Controller
     }
 
     /**
-     * DETAIL INDIKATOR BERDASARKAN SLUG + FILTER TAHUN
-     * GET /api/indikators/{slug}?tahun=2024
+     * DETAIL INDIKATOR
      */
     public function show(Request $request, $slug)
     {
@@ -65,7 +65,7 @@ class IndikatorController extends Controller
                 'slug' => $indikator->slug,
                 'deskripsi' => $indikator->deskripsi,
                 'background_image' => $indikator->background_image
-                    ? asset('storage/' . $indikator->background_image)
+                    ? $this->baseUrl . '/storage/' . $indikator->background_image
                     : null,
                 'kategoris' => $indikator->kategoris->map(function ($kategori) {
                     return [
@@ -74,7 +74,7 @@ class IndikatorController extends Controller
                         'deskripsi' => $kategori->deskripsi,
                         'tahun' => $kategori->tahun,
                         'gambar' => $kategori->gambar
-                            ? asset('storage/' . $kategori->gambar)
+                            ? $this->baseUrl . '/storage/' . $kategori->gambar
                             : null,
                     ];
                 })->values(),
@@ -84,7 +84,6 @@ class IndikatorController extends Controller
 
     /**
      * TAMBAH INDIKATOR
-     * POST /api/indikators
      */
     public function store(Request $request)
     {
@@ -121,8 +120,7 @@ class IndikatorController extends Controller
     }
 
     /**
-     * UPDATE BACKGROUND SAJA
-     * POST /api/indikators/{id}/background
+     * UPDATE BACKGROUND
      */
     public function updateBackground(Request $request, $id)
     {
@@ -132,7 +130,6 @@ class IndikatorController extends Controller
 
         $indikator = Indikator::findOrFail($id);
 
-        // Hapus gambar lama jika ada
         if ($indikator->background_image &&
             Storage::disk('public')->exists($indikator->background_image)) {
             Storage::disk('public')->delete($indikator->background_image);
@@ -149,7 +146,7 @@ class IndikatorController extends Controller
             'message' => 'Background berhasil diupdate',
             'data' => [
                 'id' => $indikator->id,
-                'background_image' => asset('storage/' . $path)
+                'background_image' => $this->baseUrl . '/storage/' . $path
             ]
         ]);
     }
